@@ -10,7 +10,9 @@
 <template>
   <div id="shopping-list">
     <h1>{{ header || 'Welcome' }}</h1>
-    <div class="add-item-form">
+     <button v-if="editing" @click="doEdit(false)" class="btn btn-cancel">Cancel</button>
+      <button v-else @click="doEdit(true)" class="btn btn-primry">Add Item</button>
+    <div v-if="editing" class="add-item-form">
       <input 
         @keyup.enter="items.push({id:items.length + 1, label: newItem})" 
         type="text" v-model="newItem" placeholder = "Add an Item">
@@ -24,9 +26,18 @@
         Save Item
       </button>
     </div>
-    
+      <p v-if="items.length === 0">Nice job! You've bought all your items!</p>
     <ul>
-      <li v-for="item in items" :key="item.id">{{item.label}}</li>
+        <li 
+        v-for="item in items" 
+        v-for="item in reversedItems" 
+        @click="togglePurchased(item)"
+        :key="item.id"
+        class="static-class"
+        :class="{strikeout: item.purchased, priority: item.highPriority}"
+      >
+        {{item.label}}
+      </li>
     </ul>
   </div>
 </template>
@@ -66,3 +77,4 @@
 
 </body>
 </html>
+
